@@ -60,14 +60,8 @@ python export_inference_graph.py --input_type image_tensor ^
 
 After I trained my model following the previous steps, I tested it in a sequence that didn't contain any frames used for the training:
 
-<div style="text-align:center;">
-<iframe width="420" height="315" src="https://www.youtube.com/watch?v=tIYGObVra6E&feature=youtu.be" frameborder="0" allowfullscreen></iframe>
-<br>
-Sequence to test the trained model.
-</div>
-
-[![Alt text](https://img.youtube.com/vi/tIYGObVra6E/0.jpg)](https://www.youtube.com/watch?v=VID)
-
+<p style="text-align: center;"> [![Alt text](https://img.youtube.com/vi/tIYGObVra6E/0.jpg)](https://www.youtube.com/watch?v=tIYGObVra6E)
+</p>
 
 As we can see, the model gets confused quite easily, leading to some false positives (Harrison Ford getting detected as BB-8, but with low probability) and to missed detections (R2-D2 doesn't get detected in some dark frames). All these failures are most likely a consequence of having such a small dataset and with images that are quite similar to each other. For example, the dataset doesn't contain almost any image of the robots being small and part of the background. Hence, the video fails to detect them when they are not in a close-up or a medium shot. Nonetheless, the results obtained are the ones expected and we can see that the model works most of the times. Here are some final test images where the model succeed.   
 
