@@ -21,18 +21,41 @@ If you're asking yourself *"Why do you want to detect R2-D2 and BB-8 in a video?
 
 ## Tensorflow's Object Detection API 
 
-Some time ago, the Tensorflow team made available an Object Detection API that makes the process of fine-tuning a pre-trained model easier. Without it, you should manually download the weights of a pre-trained neural network and write all the Tensorflow code (or other) to build a net and initialize it with the pre-trained weights. In order to use the API, we only need to tweak some lines of code from the files already made available to us. Here, I won't go into the details of the architecture of the net, the optimization algorithm used (the default will be RMSProp) or the several other hyper-parameters.
+Some time ago, the Tensorflow team made available an Object Detection API that makes the process of fine-tuning a pre-trained model easier. In order to use the API, we only need to tweak some lines of code from the files already made available to us. Here, I won't go into the details of the net architecture, the optimization algorithm used (the default will be RMSProp) or the several other hyper-parameters.
 
-Following, I will list the main steps needed to build your own object detection model:
+Following, I will list the main steps needed to build your own object detection model (it is assumed that you already followed the [installation instructions](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md) for the API):
 
 1. **Collect your images** and **annotate** them (I used [labelImg](https://github.com/tzutalin/labelImg)). Normally, you would want to have a few hundred images but it depends on the problem. I managed to gather a hundred for each class (R2-D2 and BB-8). They are probably too few and too similar based on the results obtained, but at least the model works as expected.
-2. **Create TF Records** using the [file provided](https://github.com/averdones/star_wars_object_detection/blob/master/create_sw_tf_record.py) by the API. These files will be the input for the API. If your dataset (images and annotations) has an analogous format as the one of the [Oxford-IIIT Pet Dataset](http://www.robots.ox.ac.uk/~vgg/data/pets/), you shouldn't have any trouble creating your TF Records. Tensorflow has also a [helper code](https://github.com/tensorflow/models/blob/master/research/object_detection/create_pascal_tf_record.py) to create TF Records of the [PASCAL VOC dataset](http://host.robots.ox.ac.uk/pascal/VOC/). Otherwise, this step could be a bit tricky, since you should code the program by yourself. The command to run the script that creates the TF Records if the following:
-
+2. **Create TF Records** using the [file provided](https://github.com/averdones/star_wars_object_detection/blob/master/create_sw_tf_record.py) by the API. These files will be the input for the API. If your dataset (images and annotations) has an analogous format as the one of the [Oxford-IIIT Pet Dataset](http://www.robots.ox.ac.uk/~vgg/data/pets/), you shouldn't have any trouble creating your TF Records. Tensorflow has also a [helper code](https://github.com/tensorflow/models/blob/master/research/object_detection/create_pascal_tf_record.py) to create TF Records of the [PASCAL VOC dataset](http://host.robots.ox.ac.uk/pascal/VOC/). Otherwise, this step could be a bit tricky, since you should code the program by yourself. The command to run the script that creates the TF Records if the following (this is Windows code, so ^ just splits a long line and it's analogous to \ in linux):
 ```
-python create_sw_tf_record.py --
-label_map_path=D:/Python_projects/Detection/object_detection/data/sw_label_map.pbtxt --
+python create_sw_tf_record.py -- ^
+label_map_path=D:/Python_projects/Detection/object_detection/data/sw_label_map.pbtxt -- ^
 data_dir=D:/Python_projects/Detection --output_dir=D:/Python_projects/Detection/object_detection/data
 ```
+Of course, you need to use your own path. I used the full path because I had troubles with the short ones (a Windows matter most likely).
+4. **Download a pre-trained** model from [here](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md). I chose the *ssd_inception_v2_coco* because it was fast and had a higher precision (mAP) than *ssd_mobilenet_v1_coco*, but you can use any other.
+3. **Create a condiguration file** for the model that will be trained. You can choose from [here](https://github.com/tensorflow/models/tree/master/research/object_detection/samples/configs) the corresponding configuration file to your model. You only need to change the paths and the number of classes (*num_classes: 2* in line 9). In my case there are just two.
+4. **Train** the model. You can use the following code from inside of the object detection directory of the API (that you should've clone previously while following the installation instructions):
+```
+python train.py --logtostderr --train_dir=D:/Python_projects/Detection/object_detection/data ^
+--pipeline_config_path=D:/Python_projects/Detection/object_detection/data/ssd_inception_v2_pets.config
+```
+This step could last for hours to get to a stable training loss, depending on your GPU. I don't know how long would it take on a CPU. You can check the evolution of your model using tensorboard. Open a new command prompt or terminal and write:
+```
+cd D:/Projects_python/Detection/object_detection
+
+tensorboard --logdir=data
+```
+On Windows, if you pass the full or shortened path to logdir, you won't see any results (at least it happened from me and this worked after a few tries). 
+5. **Export the frozen graph** from the trained model. You just need to use the [script](https://github.com/averdones/star_wars_object_detection/blob/master/export_inference_graph.py) provided by Tensorflow without any modifications. The code is:
+```
+python export_inference_graph.py --input_type image_tensor ^
+--pipeline_config_path D:/Python_projects/Detection/object_detection/data/ssd_inception_v2_pets.config ^
+--trained_checkpoint_prefix D:/Python_projects/Detection/object_detection/data/model.ckpt-5576 ^
+--output_directory D:/Python_projects/Detection/sw_inference_graph
+```
+6. **Try your model!**. You can use this [ipython notebook] to test your model on images and videos.
+
 
 
 
