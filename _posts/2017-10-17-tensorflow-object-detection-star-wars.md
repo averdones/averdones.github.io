@@ -3,6 +3,7 @@ layout: post
 title: Transfer Learning using Tensorflow's Object Detection API: detecting R2-D2 and BB-8
 published: false
 ---
+
 In this post, I'm going to train an object detector to locate R2-D2 and BB-8 in an image or video. But let's not wait and see some results!
 
 <div class="imgcap">
