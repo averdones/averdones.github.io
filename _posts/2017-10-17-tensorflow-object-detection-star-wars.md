@@ -1,5 +1,6 @@
 ---
-published: false
+layout: post
+title: Test
 ---
 
 In this post, I'm going to train an object detector to locate R2-D2 and BB-8 in an image or video. But let's not wait and see some results!
