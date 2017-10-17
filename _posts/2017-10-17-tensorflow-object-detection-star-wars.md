@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Test
+title: Transfer Learning using Tensorflow's Object Detection API: detecting R2-D2 and BB-8 
 ---
 
 In this post, I'm going to train an object detector to locate R2-D2 and BB-8 in an image or video. But let's not wait and see some results!
@@ -61,7 +61,7 @@ python export_inference_graph.py --input_type image_tensor ^
 After I trained my model following the previous steps, I tested it in a sequence that didn't contain any frames used for the training:
 
 <div style="text-align:center;">
-<iframe width="420" height="315" src="https://youtu.be/tIYGObVra6E" frameborder="0" allowfullscreen></iframe>
+<iframe width="420" height="315" src="https://www.youtube.com/watch?v=tIYGObVra6E&feature=youtu.be?autoplay=1&amp;loop=1&amp;rel=0&amp;showinfo=0&amp;playlist=YOW8m2YGtRg" frameborder="0" allowfullscreen></iframe>
 <br>
 Sequence to test the trained model.
 </div>
