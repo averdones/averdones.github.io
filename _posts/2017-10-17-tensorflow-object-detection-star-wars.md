@@ -70,14 +70,14 @@ As we can see, the model gets confused quite easily, leading to some false posit
 
 ![](https://github.com/averdones/averdones.github.io/blob/master/images/tensorflow-object-detection-star-wars/test_image_1.png)
 
-![](images/tensorflow-object-detection-star-wars/test_image_2.png)
+![](https://github.com/averdones/averdones.github.io/blob/master/images/tensorflow-object-detection-star-wars/test_image_2.png)
 
-![](images/tensorflow-object-detection-star-wars/test_image_3.png)
+![](https://github.com/averdones/averdones.github.io/blob/master/images/tensorflow-object-detection-star-wars/test_image_3.png)
 
-![](images/tensorflow-object-detection-star-wars/test_image_4.png)
+![](https://github.com/averdones/averdones.github.io/blob/master/images/tensorflow-object-detection-star-wars/test_image_4.png)
 
-![](images/tensorflow-object-detection-star-wars/test_image_5.png)
+![](https://github.com/averdones/averdones.github.io/blob/master/images/tensorflow-object-detection-star-wars/test_image_5.png)
 
-![](images/tensorflow-object-detection-star-wars/test_image_6.png)
+![](https://github.com/averdones/averdones.github.io/blob/master/images/tensorflow-object-detection-star-wars/test_image_6.png)
 
 In this last one, I don't know if I got a lucky frame or if in the video the model works worse for some reason.
