@@ -68,16 +68,28 @@ Sequence to test the trained model.
 
 As we can see, the model gets confused quite easily, leading to some false positives (Harrison Ford getting detected as BB-8, but with low probability) and to missed detections (R2-D2 doesn't get detected in some dark frames). All these failures are most likely a consequence of having such a small dataset and with images that are quite similar to each other. For example, the dataset doesn't contain almost any image of the robots being small and part of the background. Hence, the video fails to detect them when they are not in a close-up or a medium shot. Nonetheless, the results obtained are the ones expected and we can see that the model works most of the times. Here are some final test images where the model succeed.   
 
-![](https://github.com/averdones/averdones.github.io/blob/master/images/tensorflow-object-detection-star-wars/test_image_1.png)
+<div class="imgcap">
+<img src="/images/tensorflow-object-detection-star-wars/test_image_1.png">
+</div>
 
-![](https://github.com/averdones/averdones.github.io/blob/master/images/tensorflow-object-detection-star-wars/test_image_2.png)
+<div class="imgcap">
+<img src="/images/tensorflow-object-detection-star-wars/test_image_2.png">
+</div>
 
-![](https://github.com/averdones/averdones.github.io/blob/master/images/tensorflow-object-detection-star-wars/test_image_3.png)
+<div class="imgcap">
+<img src="/images/tensorflow-object-detection-star-wars/test_image_3.png">
+</div>
 
-![](https://github.com/averdones/averdones.github.io/blob/master/images/tensorflow-object-detection-star-wars/test_image_4.png)
+<div class="imgcap">
+<img src="/images/tensorflow-object-detection-star-wars/test_image_4.png">
+</div>
 
-![](https://github.com/averdones/averdones.github.io/blob/master/images/tensorflow-object-detection-star-wars/test_image_5.png)
+<div class="imgcap">
+<img src="/images/tensorflow-object-detection-star-wars/test_image_5.png">
+</div>
 
-![](https://github.com/averdones/averdones.github.io/blob/master/images/tensorflow-object-detection-star-wars/test_image_6.png)
+<div class="imgcap">
+<img src="/images/tensorflow-object-detection-star-wars/test_image_6.png">
+</div>
 
 In this last one, I don't know if I got a lucky frame or if in the video the model works worse for some reason.
