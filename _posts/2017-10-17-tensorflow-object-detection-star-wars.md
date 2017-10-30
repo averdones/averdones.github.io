@@ -1,6 +1,9 @@
 ---
 layout: post
-title: "Transfer Learning using Tensorflow's Object Detection API: detecting R2-D2 and BB-8"
+title: >-
+  Transfer Learning using Tensorflow's Object Detection API: detecting R2-D2 and
+  BB-8
+published: true
 ---
 
 In this post, I'm going to train an object detector to locate R2-D2 and BB-8 in an image or video. All the files can be found on my [GitHub repo](https://github.com/averdones/star_wars_object_detection). But let's not wait and see some results!
@@ -27,7 +30,7 @@ Some time ago, the Tensorflow team made available an Object Detection API that m
 Following, I will list the main steps needed to build your own object detection model (it is assumed that you already followed the [installation instructions](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md) for the API):
 
 1. **Collect your images** and **annotate** them (I used [labelImg](https://github.com/tzutalin/labelImg)). Normally, you would want to have a few hundred images but it depends on the problem. I managed to gather a hundred for each class (R2-D2 and BB-8). They are probably too few and too similar based on the results obtained, but at least the model works as expected.
-2. **Create TF Records** using the [file provided](https://github.com/averdones/star_wars_object_detection/blob/master/create_sw_tf_record.py) by the API. These files will be the input for the API. If your dataset (images and annotations) has an analogous format as the one of the [Oxford-IIIT Pet Dataset](http://www.robots.ox.ac.uk/~vgg/data/pets/), you shouldn't have any trouble creating your TF Records. Tensorflow has also a [helper code](https://github.com/tensorflow/models/blob/master/research/object_detection/create_pascal_tf_record.py) to create TF Records of the [PASCAL VOC dataset](http://host.robots.ox.ac.uk/pascal/VOC/). Otherwise, this step could be a bit tricky, since you should code the program by yourself. The command to run the script that creates the TF Records if the following (this is Windows code, so ^ just splits a long line and it's analogous to \ in linux):
+2. **Create TF Records** using the [file provided](https://github.com/averdones/star_wars_object_detection/blob/master/create_sw_tf_record.py) by the API. These files will be the input for the API. If your dataset (images and annotations) has an analogous format as the one of the [Oxford-IIIT Pet Dataset](http://www.robots.ox.ac.uk/~vgg/data/pets/), you shouldn't have any trouble creating your TF Records. Tensorflow has also a [helper code](https://github.com/tensorflow/models/blob/master/research/object_detection/create_pascal_tf_record.py) to create TF Records of the [PASCAL VOC dataset](http://host.robots.ox.ac.uk/pascal/VOC/). Otherwise, this step could be a bit tricky, since you should code the program by yourself. The command to run the script that creates the TF Records is the following (this is Windows code, so ^ just splits a long line and it's analogous to \ in linux):
 ```
 python create_sw_tf_record.py -- ^
 label_map_path=D:/Python_projects/Detection/object_detection/data/sw_label_map.pbtxt -- ^
