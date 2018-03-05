@@ -3,6 +3,7 @@ layout: post
 title: >-
   Transfer Learning using Tensorflow's Object Detection API: detecting R2-D2 and
   BB-8
+comments: true
 published: true
 ---
 
