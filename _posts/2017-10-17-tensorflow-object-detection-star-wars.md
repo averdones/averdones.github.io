@@ -9,10 +9,10 @@ published: true
 
 In this post, I'm going to train an object detector to locate R2-D2 and BB-8 in an image or video. All the files can be found on my [GitHub repo](https://github.com/averdones/star_wars_object_detection). But let's not wait and see some results!
 
-<div class="imgcap" style="text-align:center;">
-<img src="/images/tensorflow-object-detection-star-wars/result_1.gif">
-<div class="thecap" style="text-align:center;">Detection of R2-D2 and BB-8</div>
-</div>
+<figure>
+	<img src="/assets/images/tensorflow-object-detection-star-wars/result_1.gif" class="center">
+	<figcaption>Detection of R2-D2 and BB-8</figcaption>
+</figure>
 
 ## What is Transfer Learning
 
@@ -41,18 +41,18 @@ Of course, you need to use your own path. I used the full path because I had tro
 4. **Download a pre-trained** model from [here](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md). I chose the *ssd_inception_v2_coco* because it was fast and had a higher precision (mAP) than *ssd_mobilenet_v1_coco*, but you can use any other.
 3. **Create a configuration file** for the model that will be trained. You can choose from [here](https://github.com/tensorflow/models/tree/master/research/object_detection/samples/configs) the corresponding configuration file to your model. You only need to change the paths and the number of classes (*num_classes: 2* in line 9). In my case there are just two.
 4. **Train** the model. You can use the following code from inside of the object detection directory of the API (that you should've clone previously while following the installation instructions):
-```
+```python
 python train.py --logtostderr --train_dir=D:/Python_projects/Detection/object_detection/data ^
 --pipeline_config_path=D:/Python_projects/Detection/object_detection/data/ssd_inception_v2_pets.config
 ```
 This step could last for hours to get to a stable training loss, depending on your GPU. I don't know how long would it take on a CPU. A more rigorous study would require to check the loss function or our preferred metric on a validation set. However, since I couldn't gather many images and this is just an experiment on the Tensorflow API, I won't care here. You can check the evolution of your model using tensorboard. Open a new command prompt or terminal and write:
-```
+```python
 cd D:/Projects_python/Detection/object_detection
 tensorboard --logdir=data
 ```
 On Windows, if you pass the full or shortened path to logdir, you won't see any results (at least it happened to me and this worked after a few tries). 
 5. **Export the frozen graph** from the trained model. You just need to use the [script](https://github.com/averdones/star_wars_object_detection/blob/master/export_inference_graph.py) provided by Tensorflow without any modifications. The code is:
-```
+```python
 python export_inference_graph.py --input_type image_tensor ^
 --pipeline_config_path D:/Python_projects/Detection/object_detection/data/ssd_inception_v2_pets.config ^
 --trained_checkpoint_prefix D:/Python_projects/Detection/object_detection/data/model.ckpt-5576 ^
@@ -70,28 +70,17 @@ After I trained my model following the previous steps, I tested it in a sequence
 
 As we can see, the model gets confused quite easily, leading to some false positives (Harrison Ford getting detected as BB-8, but with low probability) and to missed detections (R2-D2 doesn't get detected in some dark frames). All these failures are most likely a consequence of having such a small dataset and with images that are quite similar to each other. For example, the dataset doesn't contain almost any image of the robots being small and part of the background. Hence, the video fails to detect them when they are not in a close-up or a medium shot. Nonetheless, the results obtained are the ones expected and we can see that the model works most of the times. Here are some final test images where the model succeed.   
 
-<div class="imgcap">
-<img src="/images/tensorflow-object-detection-star-wars/test_image_1.png">
-</div>
+<img src="/assets/images/tensorflow-object-detection-star-wars/test_image_1.png" class="center">
 
-<div class="imgcap">
-<img src="/images/tensorflow-object-detection-star-wars/test_image_2.png">
-</div>
+<img src="/assets/images/tensorflow-object-detection-star-wars/test_image_2.png" class="center">
 
-<div class="imgcap">
-<img src="/images/tensorflow-object-detection-star-wars/test_image_3.png">
-</div>
+<img src="/assets/images/tensorflow-object-detection-star-wars/test_image_3.png" class="center">
 
-<div class="imgcap">
-<img src="/images/tensorflow-object-detection-star-wars/test_image_4.png">
-</div>
+<img src="/assets/images/tensorflow-object-detection-star-wars/test_image_4.png" class="center">
 
-<div class="imgcap">
-<img src="/images/tensorflow-object-detection-star-wars/test_image_5.png">
-</div>
+<img src="/assets/images/tensorflow-object-detection-star-wars/test_image_5.png" class="center">
 
-<div class="imgcap">
-<img src="/images/tensorflow-object-detection-star-wars/test_image_6.png">
-</div>
+<img src="/assets/images/tensorflow-object-detection-star-wars/test_image_6.png" class="center">
+
 
 In this last one, I don't know if I got a lucky frame or if in the video the model works worse for some reason.

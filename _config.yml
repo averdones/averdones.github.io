@@ -2,6 +2,9 @@
 # This file contains configuration flags to customize your site
 #
 
+# Point to reporitory because setting up origin in git remote is broken
+repository: averdones/averdones.github.io
+
 # Name of your site (displayed in the header)
 name: Antonio Verdone blog
 
@@ -73,7 +76,7 @@ sass:
   style: :expanded # You might prefer to minify using :compressed
 
 # Use the following plug-ins
-gems:
+plugins:
   - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
   - jekyll-feed # Create an Atom feed using the official Jekyll feed gem
 
