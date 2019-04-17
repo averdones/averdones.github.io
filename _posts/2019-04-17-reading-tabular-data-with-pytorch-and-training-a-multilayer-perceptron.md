@@ -1,48 +1,68 @@
 ---
 layout: post
 title: >-
-  Real-time semantic image segmentation with DeepLab in Tensorflow
+  Reading tabular data in pytorch and training a multilayer perceptron
 comments: true
 published: true
 ---
 
-A couple of hours ago, I came across the [new blog of Google Research](https://research.googleblog.com/2018/03/semantic-image-segmentation-with.html). This time the topic addressed was **Semantic Segmentation** in images, a task of the field of Computer Vision that consists in assigning a semantic label to every pixel in an image. You can refer to [the paper](https://arxiv.org/abs/1802.02611) for an in-depth explanation of the new version of the algorithm they used (DeepLab-v3+).  
+Pytorch is a library that is normally used to train models that leverage unstructured data, such as images or text. However, it can also be used to train models that have tabular data as their input. This is nothing more than classic tables, where each row represents an observation and each column holds a variable. While deep learning models may not be the best suited to fit tabular data, since they might contain simple enough relationships such that a shallow linear regression or a support vector machine could lead to better predictions, you still may want to use Pytorch to solve your tabular shaped problem. For example, you might think that your problem is complex enough to try a deep network approach, or perhaps you are building a larger pipeline in Pytorch and you don't think it's worth introducing a new framework in your code.
 
-Semantic segmentation is a more advanced technique compared to *image classification*, where an image contains a single object that needs to be classified into some category, and *object detection and recognition*, where an arbitrary number of objects can be present in an image and the objective is to detect their position in the image (with a bounding box) and to classify them into different categories. 
+Reading data in Pytorch can be very easy to do thanks to some already [implemented methods](https://pytorch.org/docs/stable/torchvision/datasets.html#imagefolder). However, if your data is not one of the famous datasets, such as MNIST, or is not stored in a specific way, instead of having a one-liner to read your data, you will have to code a whole new class. The jump from using a single line to read your data, to code an entire class for it can be daunting. Fortunately, Pytorch has tried to make things as easier as possible for the user, allowing us to inherit from their [*Dataset* class](https://pytorch.org/docs/stable/_modules/torch/utils/data/dataset.html#Dataset), where things have been structured appropriately. In doing so, we will only have to **override two methods**:
 
-The problem of semantic segmentation can be thought as a much harder object detection and classification task, where the bounding box won't be a box anymore, but instead will be an irregular shape that should overlap with the real shape of the object being detected. Detecting each pixel of the objects in an image is a very useful method that is fundamental for many applications such as autonomous cars.
+- **\_\_len\_\_**: it has to return the number of rows of the input table.
+- **\_\_getitem\_\_**: it has to return a single observation, including both the independent variables and the dependent variable. For example, the return could be something like $[[100, 2, -5], 0]$, where there are three independent variables that take the values 100, 2 and -5 respectively and the value of the dependent variable is 0. This method has a mandatory argument, which is the index of the table row. We will need to write our code thinking that this index can take any integer value, such as 10, which would mean *get row number 10* from our table. 
 
-In this post, I will share some code so you can play around with the latest version of DeepLab (DeepLab-v3+) using your webcam in real time. All my code is based on the excellent [code published](https://github.com/tensorflow/models/tree/master/research/deeplab) by the authors of the paper. I will also share the same notebook of the authors but for Python 3 (the original is for Python 2), so you can save time in case you don't have tensorflow and all the dependencies installed in Python 2.
+Additionaly, we could use the method **\_\_init\_\_** of our class to load and transform our data.
 
-But first, a quick example of what I'm talking about:
+## A simple example
 
-<img src="/assets/images/real-time-semantic-image-segmentation-with-deeplab-in-tensorflow/webcam_segmentation.gif" class="center">
+An example will make things much clearer. I will be reading a dataset from Kaggle called [Students Performance in Exams](https://www.kaggle.com/spscientist/students-performance-in-exams), that you can easily download and try for yourself. In this particular example, I will try to predict the variable *math score* based on all the other variables available. However, the specifics of the dataset are not relevant at the moment. The following code shows the complete class needed to read the downloaded table:
 
-*P.S. Don't worry, I'm not choking, I just forgot to change the sneaky BGR in OpenCV to RGB.*
+```python
+class StudentsPerformanceDataset(Dataset):
+    """Students Performance dataset."""
 
-In order to run my code, you just need to follow the instructions found in the [github page](https://github.com/tensorflow/models/tree/master/research/deeplab) of the project, where the authors already prepared an [off-the-shelf jupyter notebook](https://github.com/tensorflow/models/blob/master/research/deeplab/deeplab_demo.ipynb) to run the algorithm on images. I only use an extra dependency which is OpenCV. And optionally, [scikit video](http://www.scikit-video.org/stable/), in case you also want to save the video. 
+    def __init__(self, csv_file):
+        """Initializes instance of class StudentsPerformanceDataset.
 
-Copy the following snippet into a jupyter notebook cell that should be inside the directory of deeplab (that you previously should've cloned) and just run it! Now you can see yourself and a real-time segmentation of everything captured by your webcam (of course, only the objects that the net was trained on will be segmented).
+        Args:
+            csv_file (str): Path to the csv file with the students data.
 
-If you get an error, you probably need to change the line that shows `final = np.zeros((1, 384, 1026, 3))` based on your camera resolution. Here, the shape of `color_and_mask` is needed.
+        """
+        df = pd.read_csv(csv_file)
 
-Every time you run the code, a new model of approximately 350Mb will be downloaded. So, if you want, you can just change the line where it says `model = DeepLabModel(download_path)` to a local path where you stored your downloaded model.
+        # Grouping variable names
+        self.categorical = ["gender", "race/ethnicity", "parental level of education", "lunch",
+                           "test preparation course"]
+        self.target = "math score"
 
-This is the code to run DeepLab-v3+ on your webcam:
-{% gist averdones/05ac8d828ab7c2daa508af43f520d8e4 %}
+        # One-hot encoding of categorical variables
+        self.students_frame = pd.get_dummies(df, prefix=self.categorical)
 
-And this is the code to run DeepLab-v3+ on images using Python 3:
-{% gist averdones/d9b66a8078391ebc18d17bdadeca7dce %}
+        # Save target and predictors
+        self.X = self.students_frame.drop(self.target, axis=1)
+        self.y = self.students_frame[self.target]
 
-Have fun segmenting!
+    def __len__(self):
+        return len(self.students_frame)
 
+    def __getitem__(self, idx):
+        # Convert idx from tensor to list due to pandas bug (that arises when using pytorch's random_split)
+        if isinstance(idx, torch.Tensor):
+            idx = idx.tolist()
 
+        return [self.X.iloc[idx].values, self.y[idx]]
+```
+ 
+As you can see, the table is in *csv* format, so I decided to use *pandas* to load it. Also, there are some categorical variables that need to be one-hot encoded, and as previously stated, I used the \_\_init\_\_ method to do so. Since my target variable is *math score* I will save it in the python variable *y*, which represents the dependent variable of our problem. The rest of the variables are saved in the python variable called *X*.
 
-References:
+The classical neural network to fit tabular data is the **Multilayer Perceptron**, which could be thought of as an extension of the linear and logistic regressions, depending on the activation function of the last layer: the identity function for linear regression and the sigmoid function for logistic regression. In fact, a multilayer perceptron without any hidden layers is exactly either a linear or a logistic regression (as long as the activation functions of the last layer are either the identity or the sigmoid).
 
-*@article{deeplabv3plus2018,
-  title={Encoder-Decoder with Atrous Separable Convolution for Semantic Image Segmentation},
-  author={Liang-Chieh Chen and Yukun Zhu and George Papandreou and Florian Schroff and Hartwig Adam},
-  journal={arXiv:1802.02611},
-  year={2018}
-}*
+Following, I will present a small script that can be run in order to read and train a small multilayer perceptron on the Students Performance data. The rest of the code contains the definition of a small model, the dataloaders, the choice of a loss function and an optimization algorithm, and the usual loop to fit the data using backpropagation.  
+
+{% gist averdones/ff8e2c04962f585168278d73e4b4a48a %}
+
+Now you should be able to start playing around with structured data in Pytorch. 
+
+Enjoy your tabular data!
