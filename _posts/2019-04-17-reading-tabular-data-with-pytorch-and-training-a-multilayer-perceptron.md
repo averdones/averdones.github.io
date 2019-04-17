@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Reading tabular data in Pytorch and training a multilayer perceptron
+title: Reading tabular data in Pytorch and training a Multilayer Perceptron
 comments: true
 published: true
 ---
