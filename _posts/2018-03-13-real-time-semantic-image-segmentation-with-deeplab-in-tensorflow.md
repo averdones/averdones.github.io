@@ -37,6 +37,13 @@ And this is the code to run DeepLab-v3+ on images using Python 3:
 Have fun segmenting!
 
 
+**EDIT (May 14, 2020)**: I uploaded a new gist called [`deeplab_demo_webcam_v2.py`](https://gist.github.com/averdones/b94e4eb335be356482f1bc1b7f7b15f3) that allows you to run the script as a regular python module (without the need of copy-pasting the code into a Jupyter Notebook). Since the script still makes use of some helper functions to handle the colors, you can either still choose to save `deeplab_demo_webcam_v2.py` into `tensorflow/models/research/deeplab` and run it from there, or even better, you could run it from anywhere just by making sure that the file `get_dataset_colormap.py` is located in the same directory as `deeplab_demo_webcam_v2.py`. Such file can be found in [`tensorflow/models/research/deeplab/utils/get_dataset_colormap.py`](https://github.com/tensorflow/models/blob/master/research/deeplab/utils/get_dataset_colormap.py).
+
+Once you have that setup, simply open a terminal and run the following command:
+
+```python
+python deeplab_demo_webcam_v2.py 
+```
 
 References:
 
