@@ -16,7 +16,7 @@ Reading data in Pytorch can be very easy to do thanks to some already [implement
 - **\_\_len\_\_**: it has to return the number of rows of the input table.
 - **\_\_getitem\_\_**: it has to return a single observation, including both the independent variables and the dependent variable. For example, the return could be something like `[[100, 2, -5], 0]`, where there are three independent variables that take the values `100`, `2` and `-5` respectively and the value of the dependent variable is `0`. This method has a mandatory argument, which is the index of the table row. We will need to write our code thinking that this index can take any integer value, such as 10, which would mean *get row number 10* from our table. 
 
-Additionaly, we could use the method **\_\_init\_\_** of our class to load and transform our data.
+Additionally, we could use the method **\_\_init\_\_** of our class to load and transform our data.
 
 ## A simple example
 
